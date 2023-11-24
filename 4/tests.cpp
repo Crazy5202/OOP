@@ -13,8 +13,8 @@ TEST(triangle, different) {
     EXPECT_EQ(tester->points, init_vector);
     EXPECT_TRUE(double(*tester)-0.43<0.01);
     EXPECT_TRUE(tester == tester);
-    Triangle new_tester = Triangle(init_vector);
-    Triangle new_tester_2 = new_tester;
+    Triangle<int> new_tester = Triangle<int>(init_vector);
+    Triangle<int> new_tester_2 = new_tester;
     EXPECT_EQ(new_tester_2, new_tester);
 }
 
@@ -24,7 +24,6 @@ TEST(hexagon, center) {
     std::pair<double, double> center = find_center(tester);
     EXPECT_EQ(center.first, 4);
 }
-
 
 TEST(array, different) {
     Array<Triangle<int>> arr(3);
