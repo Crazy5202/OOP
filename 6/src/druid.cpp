@@ -11,11 +11,12 @@ Druid::Druid(const int& _x, const int& _y, const std::string& _name) {
 }
 
 bool Druid::accept(NPC* attacker, const int& distance) {
+    bool killed = false;
     if (alive && (attacker->get_type() == "Orc" || attacker->get_type() == "Slaver")) {
         if (is_close(*attacker, distance)) { 
             alive = false;
-            return true;
+            killed = true;
         }
     }
-    return false;
+    return killed;
 }

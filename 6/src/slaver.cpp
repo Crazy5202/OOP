@@ -11,11 +11,12 @@ Slaver::Slaver(const int& _x, const int& _y, const std::string& _name) {
 }
 
 bool Slaver::accept(NPC* attacker, const int& distance) {
+    bool killed = false;
     if (alive && attacker->get_type() == "Orc") {
         if (is_close(*attacker, distance)) {
             alive = false;
-            return true;
+            killed = true;
         }
     }
-    return false;
+    return killed;
 }

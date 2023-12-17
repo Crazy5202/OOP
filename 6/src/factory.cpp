@@ -24,20 +24,3 @@ std::shared_ptr<NPC> factory(std::istream& in) {
     }
     return res;
 }
-
-std::shared_ptr<NPC> factory(const std::string& type, const std::string& name, const int& x, const int& y) {
-    std::shared_ptr<NPC> res;
-    if (type == "Slaver") {
-        res = std::make_shared<Slaver>(x, y, name);
-    }
-    else if (type == "Druid") {
-        res = std::make_shared<Druid>(x, y, name);
-    }
-    else if (type == "Orc") {
-        res = std::make_shared<Orc>(x, y, name);
-    }
-    else {
-        std::cerr << "Unknown type" << std::endl;
-    }
-    return res;
-}
