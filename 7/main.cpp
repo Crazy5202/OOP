@@ -3,11 +3,11 @@
 #include "fighters.hpp"
 
 int main() {
-    std::shared_mutex io_mtx, data_mtx;
+    std::shared_mutex data_mtx, io_mtx;
     ConsoleObserver cobs(&io_mtx);
     std::ofstream output("log.txt");
     FileObserver fobs(output);
-    Fighters fighters = Fighters();
+    Fighters fighters = Fighters(&data_mtx, &io_mtx);
     fighters.attach(&cobs);
     fighters.attach(&fobs);
     int dist, input = 0;

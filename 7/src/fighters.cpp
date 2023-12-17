@@ -2,6 +2,8 @@
 #include "factory.hpp"
 #include <algorithm>
 
+Fighters::Fighters(std::shared_mutex* _data_mtx, std::shared_mutex* _io_mtx) : data_mtx(_data_mtx), io_mtx(_io_mtx) {}
+
 void Fighters::load(std::string& filename) {
     std::ifstream file_loader;
     file_loader.open(filename);
@@ -43,19 +45,19 @@ void Fighters::detach(Observer* observer) {
 void Fighters::fight() {
     auto start_time = std::chrono::steady_clock::now();
 
-    std::thread fight_thread(std::ref(fm), start_time, std::ref(data_mtx));
+    std::thread fight_thread(std::ref(fm), start_time, data_mtx);
 
     std::thread move_thread([this, start_time] () {
         while (std::chrono::steady_clock::now() - start_time < 10s) {
             {
-                std::lock_guard<std::shared_mutex> movelock(data_mtx);
+                std::lock_guard<std::shared_mutex> movelock(*data_mtx);
                 for (auto npc : flist) {
                     if (npc->is_alive())
                         npc->move(max_x, max_y);
                 }
             }
             {
-                std::shared_lock<std::shared_mutex> readlock(data_mtx);
+                std::shared_lock<std::shared_mutex> readlock(*data_mtx);
                 for (auto attacker : flist) {
                     for (auto defender : flist) {
                         if (attacker==defender) continue;
@@ -74,14 +76,14 @@ void Fighters::fight() {
     while (std::chrono::steady_clock::now() - start_time < 10s) {
         std::vector<std::vector<char>> field(max_y, std::vector<char>(max_x, '.'));
         {
-            std::shared_lock<std::shared_mutex> readlock(data_mtx);
+            std::shared_lock<std::shared_mutex> readlock(*data_mtx);
             for (auto npc : flist) {
                 auto [x, y] = npc->get_cord();
                 field[y][x] = npc->symbol();
             }
         }
         {
-            std::lock_guard<std::shared_mutex> printlock(io_mtx);
+            std::lock_guard<std::shared_mutex> printlock(*io_mtx);
             for (int i = 0; i < field.size(); ++i) {
                 for (int j = 0; j < field[i].size(); ++j) {
                     std::cout << field[i][j];

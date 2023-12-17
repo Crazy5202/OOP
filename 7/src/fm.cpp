@@ -20,7 +20,7 @@ void FightManager::add_event(const FightEvent& event) {
     events.push(event);
 }
 
-void FightManager::operator() (std::chrono::steady_clock::time_point start_time, std::shared_mutex& mtx) {
+void FightManager::operator() (std::chrono::steady_clock::time_point start_time, std::shared_mutex* mtx) {
     while (std::chrono::steady_clock::now() - start_time < 10s) {
         if (!events.empty()) {
             FightEvent current_fight;
@@ -30,7 +30,7 @@ void FightManager::operator() (std::chrono::steady_clock::time_point start_time,
                 events.pop();
             }
             {
-                std::lock_guard<std::shared_mutex> fightlock(mtx);
+                std::lock_guard<std::shared_mutex> fightlock(*mtx);
                 if (current_fight.defender->is_alive() && current_fight.attacker->is_alive()) {
                     if (current_fight.defender->accept(current_fight.attacker.get())) notify(current_fight.defender.get(), current_fight.attacker.get());
                     if (current_fight.attacker->accept(current_fight.defender.get())) notify(current_fight.attacker.get(), current_fight.defender.get());

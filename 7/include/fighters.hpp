@@ -5,7 +5,7 @@
 
 class Fighters {
 public:
-    Fighters() = default;
+    Fighters(std::shared_mutex* data_mtx, std::shared_mutex* io_mtx);
     ~Fighters() = default;
 
     void load(std::string& filename);
@@ -20,8 +20,8 @@ public:
 private:
     int max_x = 30;
     int max_y = 30;
-    std::shared_mutex io_mtx;
-    std::shared_mutex data_mtx;
+    std::shared_mutex* io_mtx;
+    std::shared_mutex* data_mtx;
     FightManager fm;
     std::vector<std::shared_ptr<NPC>> flist;
 };

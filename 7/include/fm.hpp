@@ -22,5 +22,5 @@ public:
     void attach(Observer* observer);
     void detach(Observer* observer);
     void notify(NPC* defender, NPC* attacker);
-    void operator() (std::chrono::steady_clock::time_point start_time, std::shared_mutex& mtx);
+    void operator() (std::chrono::steady_clock::time_point start_time, std::shared_mutex* mtx);
 };
